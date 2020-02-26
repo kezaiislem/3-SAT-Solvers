@@ -14,53 +14,52 @@ import java.util.Random;
  */
 public class GeneticAlgo {
 
-    private static final int PERMANENT_SOLS = 0;
-    private static final double MUTATION_CHANCE = .05;
-    private static final double CROSSOVER_CHANCE = .95;
-    private static final int SELECTION_SIZE = 30;
-    private Solution best = null;
+    private static final int PERMANENT_SOLS = 0; // nombre de solutions père a conserver
+    private static final double MUTATION_CHANCE = .05; // taux de mulation
+    private static final double CROSSOVER_CHANCE = .95; // taux dde croisement 
+    private static final int SELECTION_SIZE = 30; // taille d'une selection
+    private Solution best = null; // meilleur solution
 
-    private Population population;
+    private Population population; // population
 
-    public GeneticAlgo() {
+    public GeneticAlgo() { // intialisation
         this.population = new Population();
         best = this.population.getSolutions().get(0);
-        //population.printPopulation();
     }
 
-    public void crossOver() {
+    public void crossOver() {// croisement
         List<Solution> newpop = new ArrayList<>();
         Solution selectionA, selectionB;
-        for (int i = 0; i < PERMANENT_SOLS; i++) {
+        for (int i = 0; i < PERMANENT_SOLS; i++) { // conserver les solutions pere
             newpop.add(getPopulation().getSolutions().get(i));
         }
-        for (int i = PERMANENT_SOLS; i < Population.POPULATION_SIZE; i++) {
+        for (int i = PERMANENT_SOLS; i < Population.POPULATION_SIZE; i++) { 
             if (Math.random() < CROSSOVER_CHANCE) {
-                selectionA = this.selectSolutions().get(0);
-                selectionB = this.selectSolutions().get(0);
-                newpop.add(this.crossOverSolution(selectionA, selectionB));
+                selectionA = this.selectSolutions().get(0); // selectioner A
+                selectionB = this.selectSolutions().get(0); // selectioner B
+                newpop.add(this.crossOverSolution(selectionA, selectionB)); // mutation entre la meilleur sol du a et la meilleur du b
             } else {
-                newpop.add(population.getSolutions().get(i));
+                newpop.add(population.getSolutions().get(i)); // ajout a la nouvelle population
             }
         }
-        getPopulation().setSolutions(newpop);
+        getPopulation().setSolutions(newpop); // ecraser ancienne population
     }
 
-    public void mutate() {
+    public void mutate() { // mutaiton
         List<Solution> newpop = new ArrayList<>();
-        for (int i = 0; i < PERMANENT_SOLS; i++) {
+        for (int i = 0; i < PERMANENT_SOLS; i++) { // conserver les solutions pere
             newpop.add(getPopulation().getSolutions().get(i));
         }
-        for (int i = PERMANENT_SOLS; i < Population.POPULATION_SIZE; i++) {
+        for (int i = PERMANENT_SOLS; i < Population.POPULATION_SIZE; i++) { // applique la mution sur toute la population 
             newpop.add(this.mutateSolution(population.getSolutions().get(i)));
         }
-        getPopulation().setSolutions(newpop);
+        getPopulation().setSolutions(newpop); // ecraser ancienne population
         if(getPopulation().getSolutions().get(0).getFitness()>best.getFitness()){
-            best = getPopulation().getSolutions().get(0);
+            best = getPopulation().getSolutions().get(0); // calcule de la meilleur solution
         }
     }
 
-    public Solution crossOverSolution(Solution sol1, Solution sol2) {
+    public Solution crossOverSolution(Solution sol1, Solution sol2) { // croisement entre 2 chromosome
         int[] values = new int[Load.VAR_NUM];
         for (int i = 0; i < Load.VAR_NUM; i++) {
             if (Math.random() < 0.5) {
@@ -72,7 +71,7 @@ public class GeneticAlgo {
         return new Solution(values);
     }
 
-    public Solution mutateSolution(Solution sol) {
+    public Solution mutateSolution(Solution sol) { // mutation entre 2 chromosome
         int[] values = new int[Load.VAR_NUM];
         for (int i = 0; i < Load.VAR_NUM; i++) {
             if (Math.random() < MUTATION_CHANCE) {
@@ -81,7 +80,6 @@ public class GeneticAlgo {
                 } else {
                     values[i] = 0;
                 }
-                //values[i] = (sol.getValues()[i] + 1 < 2) ? sol.getValues()[i] + 1 : 0;
             } else {
                 values[i] = sol.getValues()[i];
             }
@@ -89,7 +87,7 @@ public class GeneticAlgo {
         return new Solution(values);
     }
 
-    public List<Solution> selectSolutions() {
+    public List<Solution> selectSolutions() { // fonction de selection aleatoire
         List<Solution> sols = new ArrayList<>();
         Random random = new Random();
         for (int i = 0; i < SELECTION_SIZE; i++) {

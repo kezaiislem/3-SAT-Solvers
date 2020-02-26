@@ -24,27 +24,27 @@ public class Load {
 
     // Parametres
     public static int VAR_NUM; // nombre des Varriables
-    public static int CLAUSE_NUMBER;
-    public static final int DEFAULT_TIMEOUT = 60000;
-    public static long TOTAL_TIME = 0;
-    public static long startTime;
+    public static int CLAUSE_NUMBER; // nombre des clauses
+    public static final int DEFAULT_TIMEOUT = 60000; // instance timeout
+    public static long TOTAL_TIME = 0; // temps total
+    public static long startTime; // temps de debut
 
     public static void main(String[] args) {
         
         GeneticAlgo geneticAlgo;
 
-        for (int x = 1; x <= 10; x++) {
+        for (int x = 1; x <= 100; x++) { // pour les 100 instnaces 
             
-            sat = LoadSat("/res/uf75-325/uf75-0" + x + ".cnf");
+            sat = LoadSat("/res/uf75-325/uf75-0" + x + ".cnf"); // chargement de l'istance
             geneticAlgo = new GeneticAlgo();
-            startTime = System.currentTimeMillis();
+            startTime = System.currentTimeMillis();// temps de debut
 
-            while (geneticAlgo.getPopulation().getBestFitness() < CLAUSE_NUMBER && System.currentTimeMillis() - startTime < DEFAULT_TIMEOUT) {
-                geneticAlgo.crossOver();
-                geneticAlgo.mutate();
+            while (geneticAlgo.getPopulation().getBestFitness() < CLAUSE_NUMBER && System.currentTimeMillis() - startTime < DEFAULT_TIMEOUT) { // si problem n'est pas satisfait et tmps < timeout
+                geneticAlgo.crossOver(); // croisement
+                geneticAlgo.mutate(); // mutation
             }
             
-            printSolution(x, geneticAlgo);
+            printSolution(x, geneticAlgo); // affichage de la solution
             
         }
         System.out.println("Total Time : " + TOTAL_TIME + "ms");
